@@ -339,15 +339,40 @@
     <h1>Arabic Flashcard Maker</h1>
     <div class="container">
       <!-- Flashcard Form -->
-      <form class="flashcard-form" id="flashcardForm">
-        <label for="arabicWord">Arabic Word</label>
-        <input type="text" id="arabicWord" required placeholder="مثال: كتاب" />
+      <form
+        class="flashcard-form"
+        id="flashcardForm"
+        title="Fill out this form to create or update a flashcard"
+      >
+        <label for="arabicWord" title="Type the Arabic term you want to learn">
+          Arabic Word
+        </label>
+        <input
+          type="text"
+          id="arabicWord"
+          required
+          placeholder="مثال: كتاب"
+          title="Enter the Arabic word here"
+        />
 
-        <label for="meaning">Meaning</label>
-        <input type="text" id="meaning" required placeholder="Example: Book" />
+        <label for="meaning" title="What's the meaning of this Arabic word?">
+          Meaning
+        </label>
+        <input
+          type="text"
+          id="meaning"
+          required
+          placeholder="Example: Book"
+          title="Enter the meaning in your native language"
+        />
 
-        <label for="categorySelect">Category</label>
-        <select id="categorySelect">
+        <label
+          for="categorySelect"
+          title="Select a category that best describes your word"
+        >
+          Category
+        </label>
+        <select id="categorySelect" title="Pick a category for your flashcard">
           <option value="Noun">Noun</option>
           <option value="Adjective">Adjective</option>
           <option value="Verb">Verb</option>
@@ -356,10 +381,22 @@
           <option value="Saying or Proverb">Saying or Proverb</option>
         </select>
 
-        <label for="imageUrl">Image URL</label>
-        <input type="text" id="imageUrl" placeholder="Optional image link" />
+        <label
+          for="imageUrl"
+          title="Optional: paste a link to an image that represents this word"
+        >
+          Image URL
+        </label>
+        <input
+          type="text"
+          id="imageUrl"
+          placeholder="Optional image link"
+          title="Paste an image URL here if you want to associate an image"
+        />
 
-        <button type="submit" id="saveBtn">Add Flashcard</button>
+        <button type="submit" id="saveBtn" title="Click here to add or update">
+          Add Flashcard
+        </button>
       </form>
 
       <!-- Search Bar -->
@@ -368,11 +405,20 @@
         id="searchInput"
         placeholder="Search flashcards..."
         class="search-bar"
+        title="Type here to search by Arabic word, meaning, or category"
       />
 
       <!-- Progress Bar Section -->
-      <div class="progress-section">
-        <span class="progress-label">Known Cards:</span>
+      <div
+        class="progress-section"
+        title="This shows how many cards you've marked as known out of the total"
+      >
+        <span
+          class="progress-label"
+          title="Number of cards you've marked as known"
+        >
+          Known Cards:
+        </span>
         <div class="progress-bar-container">
           <div class="progress-bar" id="progressBar"></div>
         </div>
@@ -382,7 +428,11 @@
       <!-- NOTE: The Export PDF Button is removed -->
 
       <!-- Flashcards Grid -->
-      <div class="flashcards-grid" id="flashcardsGrid"></div>
+      <div
+        class="flashcards-grid"
+        id="flashcardsGrid"
+        title="Your flashcards appear here. Click a card to flip it!"
+      ></div>
     </div>
 
     <!-- Toast Container for Notifications -->
@@ -476,8 +526,6 @@
         renderFlashcards(filtered);
       });
 
-      // NOTE: PDF export code removed
-
       // Render flashcards in the grid
       function renderFlashcards(cardsArray = flashcards) {
         flashcardsGrid.innerHTML = "";
@@ -486,6 +534,8 @@
           // Flip-card container
           const flipCardContainer = document.createElement("div");
           flipCardContainer.classList.add("flip-card");
+          flipCardContainer.title =
+            "Click on the card (not on the buttons) to see its meaning!";
 
           // The main flashcard
           const cardDiv = document.createElement("div");
@@ -559,6 +609,7 @@
           const editBtn = document.createElement("button");
           editBtn.classList.add("icon-btn", "btn-edit");
           editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+          editBtn.title = "Edit this flashcard";
           editBtn.addEventListener("click", (event) => {
             event.stopPropagation(); // prevent flipping if button is clicked
             editIndex = index;
@@ -572,6 +623,7 @@
           const deleteBtn = document.createElement("button");
           deleteBtn.classList.add("icon-btn", "btn-delete");
           deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+          deleteBtn.title = "Delete this flashcard";
           deleteBtn.addEventListener("click", (event) => {
             event.stopPropagation(); // prevent flipping if button is clicked
             try {
@@ -591,6 +643,7 @@
           const knownBtn = document.createElement("button");
           knownBtn.classList.add("icon-btn", "btn-known");
           knownBtn.innerHTML = '<i class="fas fa-check"></i>';
+          knownBtn.title = "Mark this card as known";
           knownBtn.addEventListener("click", (event) => {
             event.stopPropagation();
             card.known = !card.known; // toggle known
