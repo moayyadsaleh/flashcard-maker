@@ -2,335 +2,387 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Arabic Flashcard Maker</title>
+    <title>Arabic Flashcard Maker - Modern</title>
+    <!-- Google Fonts for a clean look -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
+    />
     <style>
-      /* Basic Reset */
+      /* Basic Reset & Global Styles */
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
-
       body {
-        font-family: "Helvetica Neue", Arial, sans-serif;
-        background: #f8f9fa;
-        color: #333;
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(45deg, #ffecd2, #fcb69f);
+        min-height: 100vh;
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 20px;
+        padding: 2rem 1rem;
+        color: #333;
       }
 
       h1 {
-        margin-bottom: 1em;
-        font-size: 2rem;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        text-align: center;
+        color: #2f3542;
+        font-weight: 700;
+      }
+
+      /* Container for the form and cards */
+      .container {
+        max-width: 900px;
+        width: 100%;
+      }
+
+      /* Modern Card Form */
+      .flashcard-form {
+        background: #ffffffee;
+        backdrop-filter: blur(5px);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .flashcard-form label {
         font-weight: 600;
-        color: #2c3e50;
       }
-
-      /* Form Container */
-      .form-container {
-        background: #fff;
+      .flashcard-form input {
+        padding: 0.7rem;
+        font-size: 1rem;
+        border: 2px solid #f0f0f0;
         border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        padding: 1em;
         width: 100%;
-        max-width: 400px;
-        margin-bottom: 2em;
+        outline: none;
+        transition: border 0.3s ease;
       }
-
-      .form-container label {
-        display: block;
-        margin: 0.5em 0 0.2em;
-        font-weight: 500;
+      .flashcard-form input:focus {
+        border-color: #ffa502;
       }
-
-      .form-container input {
-        width: 100%;
-        padding: 0.6em;
-        margin-bottom: 0.8em;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 1rem;
-      }
-
-      .form-container button {
-        display: inline-block;
-        background: #3498db;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        padding: 0.7em 1.2em;
-        font-size: 1rem;
+      .flashcard-form button {
+        align-self: flex-start;
         cursor: pointer;
-        transition: background 0.3s ease;
+        padding: 0.7rem 1.25rem;
+        font-size: 1rem;
+        border: none;
+        border-radius: 8px;
+        background-color: #ffa502;
+        color: #fff;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
       }
-
-      .form-container button:hover {
-        background: #2980b9;
+      .flashcard-form button:hover {
+        background-color: #ff7f50;
       }
 
       /* Flashcards Grid */
-      .flashcards-container {
+      .flashcards-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-        grid-gap: 1em;
-        width: 100%;
-        max-width: 900px;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 1.5rem;
       }
 
-      /* Flashcard */
+      /* Flip Card Container */
+      .flip-card {
+        perspective: 1000px; /* Allows the 3D flip effect */
+      }
       .flashcard {
-        background: #fff;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        perspective: 1000px; /* for 3D flip effect */
-        position: relative;
-        transition: transform 0.6s;
-        height: 320px;
-      }
-
-      .flashcard-inner {
         position: relative;
         width: 100%;
-        height: 100%;
-        text-align: center;
+        height: 320px;
         transform-style: preserve-3d;
-        transition: transform 0.6s;
-        border-radius: 8px;
-        overflow: hidden;
+        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+      }
+      .flashcard:hover {
+        /* You can uncomment this for hover-based flip,
+         or keep it flipped on click using JS events.
+         transform: rotateY(180deg); 
+      */
       }
 
-      .flashcard:hover .flashcard-inner {
-        transform: rotateY(180deg);
-      }
-
-      .flashcard-front,
-      .flashcard-back {
+      /* Front & Back Faces */
+      .flashcard-face {
         position: absolute;
         width: 100%;
         height: 100%;
+        border-radius: 12px;
+        background-color: #fff;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
         backface-visibility: hidden;
         display: flex;
         flex-direction: column;
-        justify-content: center;
         align-items: center;
-        padding: 1em;
+        justify-content: center;
+        overflow: hidden;
       }
 
       .flashcard-front {
-        background-color: #ecf0f1;
+        background-color: #ffffff;
       }
-
       .flashcard-back {
-        background-color: #95a5a6;
+        background-color: #ffffff;
         transform: rotateY(180deg);
       }
 
-      .flashcard img {
-        width: 80px;
-        height: 80px;
+      /* Flashcard Content */
+      .image-container {
+        width: 100%;
+        height: 60%;
+        overflow: hidden;
+        background: #f2f2f2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .image-container img {
+        width: 100%;
+        height: 100%;
         object-fit: cover;
-        border-radius: 50%;
-        margin-bottom: 1em;
+        object-position: center;
+      }
+      .arabic-word {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #ff4757;
+        margin-top: 1rem;
+        text-align: center;
+      }
+      .meaning {
+        font-size: 1.1rem;
+        margin: 1.5rem 1rem;
+        color: #2f3542;
+        text-align: center;
       }
 
-      .flashcard h2 {
-        margin-bottom: 0.5em;
-        font-size: 1.5rem;
-        color: #2c3e50;
+      /* Buttons (Edit / Delete) */
+      .btns {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        position: absolute;
+        bottom: 1rem;
       }
-
-      .flashcard p {
-        font-size: 1rem;
-        color: #2c3e50;
-      }
-
-      .flashcard-buttons {
-        margin-top: 1em;
-      }
-
-      .flashcard-buttons button {
-        margin: 0 0.3em;
-        background: #e67e22;
-        color: #fff;
+      .btn-edit,
+      .btn-delete {
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
         border: none;
-        padding: 0.4em 1em;
-        border-radius: 4px;
         cursor: pointer;
-        transition: background 0.3s ease;
+        font-weight: 600;
+        transition: 0.2s;
+      }
+      .btn-edit {
+        background-color: #2ed573;
+        color: #fff;
+      }
+      .btn-edit:hover {
+        background-color: #20bf6b;
+      }
+      .btn-delete {
+        background-color: #ff4757;
+        color: #fff;
+      }
+      .btn-delete:hover {
+        background-color: #e84118;
       }
 
-      .flashcard-buttons button:hover {
-        background: #d35400;
+      /* When flipped, rotate the flashcard */
+      .flipped {
+        transform: rotateY(180deg);
       }
 
-      /* Responsive */
+      /* Responsive Adjustments */
       @media (max-width: 600px) {
-        .flashcards-container {
-          grid-template-columns: 1fr;
+        .flashcard {
+          height: 280px;
         }
       }
     </style>
   </head>
+
   <body>
     <h1>Arabic Flashcard Maker</h1>
+    <div class="container">
+      <!-- Flashcard Form -->
+      <form class="flashcard-form" id="flashcardForm">
+        <label for="arabicWord">Arabic Word</label>
+        <input type="text" id="arabicWord" required placeholder="مثال: كتاب" />
 
-    <div class="form-container">
-      <label for="arabicWord">Arabic Word</label>
-      <input
-        type="text"
-        id="arabicWord"
-        placeholder="اكتب الكلمة بالعربية"
-        required
-      />
+        <label for="meaning">Meaning</label>
+        <input type="text" id="meaning" required placeholder="Example: Book" />
 
-      <label for="meaning">Meaning</label>
-      <input
-        type="text"
-        id="meaning"
-        placeholder="Meaning in English (or your language)"
-        required
-      />
+        <label for="imageUrl">Image URL</label>
+        <input type="text" id="imageUrl" placeholder="Optional image link" />
 
-      <label for="imageUrl">Picture URL</label>
-      <input
-        type="text"
-        id="imageUrl"
-        placeholder="e.g. https://example.com/image.jpg"
-      />
+        <button type="submit" id="saveBtn">Add Flashcard</button>
+      </form>
 
-      <button id="addFlashcardBtn">Add Flashcard</button>
-    </div>
-
-    <div class="flashcards-container" id="flashcardsContainer">
-      <!-- Flashcards will appear here -->
+      <!-- Flashcards Grid -->
+      <div class="flashcards-grid" id="flashcardsGrid"></div>
     </div>
 
     <script>
-      // DOM Elements
+      const flashcardForm = document.getElementById("flashcardForm");
       const arabicWordInput = document.getElementById("arabicWord");
       const meaningInput = document.getElementById("meaning");
       const imageUrlInput = document.getElementById("imageUrl");
-      const addFlashcardBtn = document.getElementById("addFlashcardBtn");
-      const flashcardsContainer = document.getElementById(
-        "flashcardsContainer"
-      );
+      const flashcardsGrid = document.getElementById("flashcardsGrid");
+      const saveBtn = document.getElementById("saveBtn");
 
       let flashcards = [];
+      let editIndex = null; // track which card is being edited
 
-      // Load saved flashcards from localStorage on page load
+      // Load existing flashcards from localStorage on page load
       window.addEventListener("load", () => {
-        const storedFlashcards = localStorage.getItem("flashcards");
-        if (storedFlashcards) {
-          flashcards = JSON.parse(storedFlashcards);
-          renderFlashcards();
+        const storedCards = localStorage.getItem("modernArabicFlashcards");
+        if (storedCards) {
+          flashcards = JSON.parse(storedCards);
         }
+        renderFlashcards();
       });
 
-      // Add event listener to the "Add Flashcard" button
-      addFlashcardBtn.addEventListener("click", addFlashcard);
-
-      function addFlashcard() {
-        const arabicWord = arabicWordInput.value.trim();
-        const meaning = meaningInput.value.trim();
-        const imageUrl = imageUrlInput.value.trim();
-
-        if (!arabicWord || !meaning) {
-          alert("Please provide both an Arabic word and a meaning.");
-          return;
-        }
-
-        const newFlashcard = {
-          id: Date.now(), // unique ID
-          arabicWord,
-          meaning,
-          imageUrl,
+      // Handle form submission: Add or Update card
+      flashcardForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const newCard = {
+          arabicWord: arabicWordInput.value.trim(),
+          meaning: meaningInput.value.trim(),
+          imageUrl: imageUrlInput.value.trim() || "",
         };
 
-        flashcards.push(newFlashcard);
-        saveToLocalStorage();
+        // If we are editing an existing card, update it
+        if (editIndex !== null) {
+          flashcards[editIndex] = newCard;
+          editIndex = null;
+          saveBtn.textContent = "Add Flashcard";
+        } else {
+          // Otherwise, add a new card
+          flashcards.push(newCard);
+        }
+
+        // Update local storage
+        localStorage.setItem(
+          "modernArabicFlashcards",
+          JSON.stringify(flashcards)
+        );
+
+        // Re-render and reset form
         renderFlashcards();
+        flashcardForm.reset();
+      });
 
-        // Clear the input fields
-        arabicWordInput.value = "";
-        meaningInput.value = "";
-        imageUrlInput.value = "";
-      }
-
-      // Update flashcards in localStorage
-      function saveToLocalStorage() {
-        localStorage.setItem("flashcards", JSON.stringify(flashcards));
-      }
-
-      // Render all flashcards
+      // Render flashcards in the grid
       function renderFlashcards() {
-        flashcardsContainer.innerHTML = "";
+        flashcardsGrid.innerHTML = "";
 
-        flashcards.forEach((card) => {
-          const cardElement = document.createElement("div");
-          cardElement.className = "flashcard";
+        flashcards.forEach((card, index) => {
+          // Flip-card container
+          const flipCardContainer = document.createElement("div");
+          flipCardContainer.classList.add("flip-card");
 
-          cardElement.innerHTML = `
-          <div class="flashcard-inner">
-            <div class="flashcard-front">
-              ${
-                card.imageUrl
-                  ? `<img src="${card.imageUrl}" alt="Flashcard Image" />`
-                  : '<img src="https://via.placeholder.com/80" alt="Placeholder" />'
-              }
-              <h2>${card.arabicWord}</h2>
-            </div>
-            <div class="flashcard-back">
-              <p>${card.meaning}</p>
-              <div class="flashcard-buttons">
-                <button onclick="editFlashcard(${card.id})">Edit</button>
-                <button onclick="deleteFlashcard(${card.id})">Delete</button>
-              </div>
-            </div>
-          </div>
-        `;
-          flashcardsContainer.appendChild(cardElement);
+          // The main flashcard
+          const cardDiv = document.createElement("div");
+          cardDiv.classList.add("flashcard");
+
+          // FRONT FACE
+          const frontFace = document.createElement("div");
+          frontFace.classList.add("flashcard-face", "flashcard-front");
+
+          // Image container on the front
+          const imageContainer = document.createElement("div");
+          imageContainer.classList.add("image-container");
+          if (card.imageUrl) {
+            const img = document.createElement("img");
+            img.src = card.imageUrl;
+            img.alt = "Flashcard Image";
+            imageContainer.appendChild(img);
+          } else {
+            imageContainer.textContent = "No Image";
+          }
+
+          // Arabic word text
+          const arabicWordEl = document.createElement("div");
+          arabicWordEl.classList.add("arabic-word");
+          arabicWordEl.textContent = card.arabicWord;
+
+          frontFace.appendChild(imageContainer);
+          frontFace.appendChild(arabicWordEl);
+
+          // BACK FACE
+          const backFace = document.createElement("div");
+          backFace.classList.add("flashcard-face", "flashcard-back");
+
+          // Show the meaning on the back
+          const meaningEl = document.createElement("div");
+          meaningEl.classList.add("meaning");
+          meaningEl.textContent = card.meaning;
+
+          backFace.appendChild(meaningEl);
+
+          // Add the card faces to the flashcard
+          cardDiv.appendChild(frontFace);
+          cardDiv.appendChild(backFace);
+
+          // Event listener to flip the card on click
+          cardDiv.addEventListener("click", () => {
+            // Only flip if the click isn't on a button
+            if (event.target.tagName.toLowerCase() !== "button") {
+              cardDiv.classList.toggle("flipped");
+            }
+          });
+
+          // Buttons: Edit / Delete
+          const btnsDiv = document.createElement("div");
+          btnsDiv.classList.add("btns");
+
+          const editBtn = document.createElement("button");
+          editBtn.classList.add("btn-edit");
+          editBtn.textContent = "Edit";
+          editBtn.addEventListener("click", (event) => {
+            event.stopPropagation(); // prevent flipping if the button is clicked
+            editIndex = index;
+            arabicWordInput.value = card.arabicWord;
+            meaningInput.value = card.meaning;
+            imageUrlInput.value = card.imageUrl;
+            saveBtn.textContent = "Update Flashcard";
+          });
+
+          const deleteBtn = document.createElement("button");
+          deleteBtn.classList.add("btn-delete");
+          deleteBtn.textContent = "Delete";
+          deleteBtn.addEventListener("click", (event) => {
+            event.stopPropagation(); // prevent flipping if the button is clicked
+            flashcards.splice(index, 1);
+            localStorage.setItem(
+              "modernArabicFlashcards",
+              JSON.stringify(flashcards)
+            );
+            renderFlashcards();
+          });
+
+          btnsDiv.appendChild(editBtn);
+          btnsDiv.appendChild(deleteBtn);
+
+          // Position the buttons in front face so they are accessible
+          frontFace.appendChild(btnsDiv);
+
+          // Put the flashcard inside the flip-card container
+          flipCardContainer.appendChild(cardDiv);
+
+          // Finally, add to the grid
+          flashcardsGrid.appendChild(flipCardContainer);
         });
       }
-
-      // Delete a flashcard by ID
-      function deleteFlashcard(id) {
-        if (confirm("Are you sure you want to delete this flashcard?")) {
-          flashcards = flashcards.filter((card) => card.id !== id);
-          saveToLocalStorage();
-          renderFlashcards();
-        }
-      }
-
-      // Edit a flashcard by ID
-      function editFlashcard(id) {
-        const cardToEdit = flashcards.find((card) => card.id === id);
-        if (!cardToEdit) return;
-
-        // Prompt user for new values (simple approach)
-        const updatedArabicWord =
-          prompt("Update Arabic Word:", cardToEdit.arabicWord) ||
-          cardToEdit.arabicWord;
-        const updatedMeaning =
-          prompt("Update Meaning:", cardToEdit.meaning) || cardToEdit.meaning;
-        const updatedImageUrl =
-          prompt("Update Image URL:", cardToEdit.imageUrl) ||
-          cardToEdit.imageUrl;
-
-        // Update the flashcard
-        cardToEdit.arabicWord = updatedArabicWord.trim();
-        cardToEdit.meaning = updatedMeaning.trim();
-        cardToEdit.imageUrl = updatedImageUrl.trim();
-
-        saveToLocalStorage();
-        renderFlashcards();
-      }
-
-      // Make these functions available in HTML inline event handlers
-      window.deleteFlashcard = deleteFlashcard;
-      window.editFlashcard = editFlashcard;
     </script>
   </body>
 </html>
